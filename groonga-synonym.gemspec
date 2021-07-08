@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   clean_white_space.call(entries[entries.index("Description") + 1])
   description = clean_white_space.call(entries[entries.index("Description") + 1])
   spec.summary, spec.description, = description.split(/\n\n+/, 3)
-  spec.license = "MIT"
+  spec.license = "GPL-3.0+"
   spec.files = [
     "README.md",
     "LICENSE.txt",
@@ -42,19 +42,11 @@ Gem::Specification.new do |spec|
     "Gemfile",
     "#{spec.name}.gemspec",
   ]
-  spec.files += [".yardopts"]
   spec.files += Dir.glob("lib/**/*.rb")
-  spec.files += Dir.glob("image/*.*")
-  spec.files += Dir.glob("doc/text/*")
-  spec.test_files += Dir.glob("test/**/*")
 
-  spec.add_runtime_dependency("csv", ">= 3.0.5")
-  spec.add_runtime_dependency("rexml")
-  spec.add_runtime_dependency("rubyzip")
+  spec.add_runtime_dependency("red-datasets", ">= 0.1.3")
 
   spec.add_development_dependency("bundler")
   spec.add_development_dependency("rake")
   spec.add_development_dependency("test-unit")
-  spec.add_development_dependency("yard")
-  spec.add_development_dependency("kramdown")
 end
