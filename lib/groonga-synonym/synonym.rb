@@ -25,9 +25,21 @@ module GroongaSynonym
       if @weight and @weight != 1.0
         formatted << ">" << ("%f" % (@weight - 1)).gsub(/0+\z/, "")
       end
-      # TODO: Should we escape @term?
-      formatted << @term
+      formatted << escape_term(@term)
       formatted
+    end
+
+    private
+    def escape_term(term)
+      return "\"#{term}\"" if term == "OR"
+      term = term.gsub(/["()\\*:+-]/) do |matched|
+        "\\#{matched}"
+      end
+      if term.include?(" ")
+        "\"#{term}\""
+      else
+        term
+      end
     end
   end
 end
