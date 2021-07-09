@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+#
 # Copyright (C) 2021  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -13,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-require_relative "groonga-synonym/command-line/generator"
-require_relative "groonga-synonym/groonga-generator"
-require_relative "groonga-synonym/pgroonga-generator"
-require_relative "groonga-synonym/sudachi"
-require_relative "groonga-synonym/version"
+require_relative "../lib/groonga-synonym"
+
+generator = GroongaSynonym::CommandLine::Generator.new
+exit(generator.run(ARGV))

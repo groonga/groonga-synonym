@@ -21,13 +21,11 @@ module GroongaSynonym
                    table,
                    term_column,
                    synonyms_column,
-                   array: true,
                    output: $stdout)
       @source = source
       @table = table
       @term_column = term_column
       @synonyms_column = synonyms_column
-      @array = array
       @output = output
     end
 
@@ -40,7 +38,6 @@ module GroongaSynonym
         i += 1
         @output.print(",") unless i == 1
         @output.print("\n")
-        # TODO: Support not @array case.
         formatted_synonyms = synonyms.collect do |synonym|
           escape(synonym.to_groonga)
         end

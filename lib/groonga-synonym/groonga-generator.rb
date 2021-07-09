@@ -20,12 +20,12 @@ module GroongaSynonym
     def initialize(source,
                    term_column,
                    synonyms_column,
-                   vector: true,
+                   synonyms_column_is_vector: true,
                    output: $stdout)
       @source = source
       @term_column = term_column
       @synonyms_column = synonyms_column
-      @vector = vector
+      @synonyms_column_is_vector = synonyms_column_is_vector
       @output = output
     end
 
@@ -37,12 +37,12 @@ module GroongaSynonym
         record = [term]
         formatted_synonyms = synonyms.collect do |synonym|
           formatted_synonym = synonym.to_groonga
-          unless @vector
+          unless @synonyms_column_is_vector
             formatted_synonym = "(#{formatted_synonym})"
           end
           formatted_synonym
         end
-        if @vector
+        if @synonyms_column_is_vector
           record << formatted_synonyms
         else
           record << formatted_synonyms.join(" OR ")
