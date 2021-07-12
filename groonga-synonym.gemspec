@@ -43,6 +43,9 @@ Gem::Specification.new do |spec|
     "#{spec.name}.gemspec",
   ]
   spec.files += Dir.glob("lib/**/*.rb")
+  Dir.chdir("bin") do
+    spec.executables = Dir.glob("*")
+  end
 
   spec.add_runtime_dependency("red-datasets", ">= 0.1.3")
 
