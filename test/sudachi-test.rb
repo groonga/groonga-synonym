@@ -43,6 +43,20 @@ class SudachiTest < Test::Unit::TestCase
                  worker_synonyms)
   end
 
+  def test_included_word
+    _, capacity_synonyms = @source.find do |term, synonyms|
+      term == "キャパシティー"
+    end
+    assert_equal([
+                   synonym("capacity", 0.8),
+                   synonym("キャパ", 0.8),
+                   synonym("容量", 0.6),
+                   synonym("収容能力", 0.6),
+                   synonym("キャパシティー", 0.2),
+                 ],
+                 capacity_synonyms)
+  end
+
   def sample_lines(string)
     lines = string.lines
     (lines[0..4] + ["...\n"] + lines[-5..-1]).join

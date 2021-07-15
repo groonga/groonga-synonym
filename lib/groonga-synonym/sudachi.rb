@@ -70,6 +70,25 @@ module GroongaSynonym
       end
       emit_synonyms.call
       groups.each do |term, synonyms|
+        original_synonym = nil
+        sub_synonyms = []
+        synonyms.each do |synonym|
+          if synonym.weight.nil?
+            original_synonym = synonym
+          else
+            sub_synonyms << synonym if term.include?(synonym.term)
+          end
+        end
+        unless sub_synonyms.empty?
+          sorted_sub_synonyms = sub_synonyms.sort_by do |synonym|
+            synonym.term.size
+          end
+          typical_sub_synonym, *other_sub_synonyms = sorted_sub_synonyms
+          synonyms -= other_sub_synonyms
+          synonyms.delete(original_synonym)
+          synonyms << Synonym.new(original_synonym.term,
+                                  (1.0 - typical_sub_synonym.weight).round(2))
+        end
         yield(term, synonyms)
       end
     end
