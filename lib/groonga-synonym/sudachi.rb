@@ -70,20 +70,32 @@ module GroongaSynonym
       end
       emit_synonyms.call
       groups.each do |term, synonyms|
-        original_synonym = nil
-        sub_synonyms = []
-        super_synonyms = []
+        typical_synonym = nil
+        other_synonyms = []
         synonyms.each do |synonym|
           if synonym.weight.nil?
-            original_synonym = synonym
+            typical_synonym = synonym
           else
-            if term.include?(synonym.term)
-              sub_synonyms << synonym
-            elsif synonym.term.include?(term)
-              super_synonyms << synonym
-            end
+            other_synonyms << synonym
           end
         end
+        others_sub_synonyms = []
+        sub_synonyms = []
+        super_synonyms = []
+        other_synonyms.each do |synonym|
+          is_sub_synonym = other_synonyms.any? do |other_synonym|
+            other_synonym != synonym and
+              synonym.term.include?(other_synonym.term)
+          end
+          if is_sub_synonym
+            others_sub_synonyms << synonym
+          elsif term.include?(synonym.term)
+            sub_synonyms << synonym
+          elsif synonym.term.include?(term)
+            super_synonyms << synonym
+          end
+        end
+        synonyms -= others_sub_synonyms
         synonyms -= super_synonyms
         unless sub_synonyms.empty?
           sorted_sub_synonyms = sub_synonyms.sort_by do |synonym|
@@ -91,8 +103,8 @@ module GroongaSynonym
           end
           typical_sub_synonym, *other_sub_synonyms = sorted_sub_synonyms
           synonyms -= other_sub_synonyms
-          synonyms.delete(original_synonym)
-          synonyms << Synonym.new(original_synonym.term,
+          synonyms.delete(typical_synonym)
+          synonyms << Synonym.new(typical_synonym.term,
                                   (1.0 - typical_sub_synonym.weight).round(2))
         end
         yield(term, synonyms)
