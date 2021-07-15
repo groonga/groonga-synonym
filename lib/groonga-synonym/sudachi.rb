@@ -31,44 +31,52 @@ module GroongaSynonym
       groups = {}
       group_id = nil
       group = nil
-      emit_synonyms = lambda do
-        return if group.nil?
-        target_synonyms = group.reject do |synonym|
-          synonym.expansion_type == :never
-        end
-        return if target_synonyms.size <= 1
-        target_synonyms.each_with_index do |typical, i|
-          next unless typical.expansion_type == :always
-          term = typical.notation
-          synonyms = []
-          target_synonyms.each_with_index do |synonym, j|
-            if i == j
-              weight = nil
-            elsif synonym.lexeme_id == typical.lexeme_id
-              weight = 0.8
-            else
-              weight = 0.6
-            end
-            synonyms << Synonym.new(synonym.notation, weight)
-          end
-          # e.g.: 働き手
-          if groups.key?(term)
-            groups[term] |= synonyms
-          else
-            groups[term] = synonyms
-          end
-        end
-      end
       @dataset.each do |synonym|
         if synonym.group_id != group_id
-          emit_synonyms.call
+          emit_synonyms(groups, group)
           group_id = synonym.group_id
           group = [synonym]
         else
           group << synonym
         end
       end
-      emit_synonyms.call
+      emit_synonyms(groups, group)
+      filter_groups(groups) do |term, synonyms|
+        yield(term, synonyms)
+      end
+    end
+
+    private
+    def emit_synonyms(groups, group)
+      return if group.nil?
+      target_synonyms = group.reject do |synonym|
+        synonym.expansion_type == :never
+      end
+      return if target_synonyms.size <= 1
+      target_synonyms.each_with_index do |typical, i|
+        next unless typical.expansion_type == :always
+        term = typical.notation
+        synonyms = []
+        target_synonyms.each_with_index do |synonym, j|
+          if i == j
+            weight = nil
+          elsif synonym.lexeme_id == typical.lexeme_id
+            weight = 0.8
+          else
+            weight = 0.6
+          end
+          synonyms << Synonym.new(synonym.notation, weight)
+        end
+        # e.g.: 働き手
+        if groups.key?(term)
+          groups[term] |= synonyms
+        else
+          groups[term] = synonyms
+        end
+      end
+    end
+
+    def filter_groups(groups)
       groups.each do |term, synonyms|
         typical_synonym = nil
         other_synonyms = []
