@@ -72,13 +72,19 @@ module GroongaSynonym
       groups.each do |term, synonyms|
         original_synonym = nil
         sub_synonyms = []
+        super_synonyms = []
         synonyms.each do |synonym|
           if synonym.weight.nil?
             original_synonym = synonym
           else
-            sub_synonyms << synonym if term.include?(synonym.term)
+            if term.include?(synonym.term)
+              sub_synonyms << synonym
+            elsif synonym.term.include?(term)
+              super_synonyms << synonym
+            end
           end
         end
+        synonyms -= super_synonyms
         unless sub_synonyms.empty?
           sorted_sub_synonyms = sub_synonyms.sort_by do |synonym|
             synonym.term.size

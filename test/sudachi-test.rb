@@ -43,7 +43,7 @@ class SudachiTest < Test::Unit::TestCase
                  worker_synonyms)
   end
 
-  def test_included_word
+  def test_sub_word
     _, capacity_synonyms = @source.find do |term, synonyms|
       term == "キャパシティー"
     end
@@ -53,6 +53,19 @@ class SudachiTest < Test::Unit::TestCase
                    synonym("容量", 0.6),
                    synonym("収容能力", 0.6),
                    synonym("キャパシティー", 0.2),
+                 ],
+                 capacity_synonyms)
+  end
+
+  def test_super_word
+    _, capacity_synonyms = @source.find do |term, synonyms|
+      term == "キャパ"
+    end
+    assert_equal([
+                   synonym("capacity", 0.8),
+                   synonym("キャパ", nil),
+                   synonym("容量", 0.6),
+                   synonym("収容能力", 0.6),
                  ],
                  capacity_synonyms)
   end
