@@ -28,6 +28,7 @@ module GroongaSynonym
     def each
       return to_enum(__method__) unless block_given?
 
+      groups = {}
       group_id = nil
       group = nil
       emit_synonyms = lambda do
@@ -50,7 +51,12 @@ module GroongaSynonym
             end
             synonyms << Synonym.new(synonym.notation, weight)
           end
-          yield(term, synonyms)
+          # e.g.: 働き手
+          if groups.key?(term)
+            groups[term] |= synonyms
+          else
+            groups[term] = synonyms
+          end
         end
       end
       @dataset.each do |synonym|
@@ -63,6 +69,9 @@ module GroongaSynonym
         end
       end
       emit_synonyms.call
+      groups.each do |term, synonyms|
+        yield(term, synonyms)
+      end
     end
   end
 end

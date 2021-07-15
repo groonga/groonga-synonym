@@ -15,6 +15,8 @@
 
 module GroongaSynonym
   class Synonym
+    attr_reader :term
+    attr_reader :weight
     def initialize(term, weight=nil)
       @term = term
       @weight = weight
@@ -27,6 +29,20 @@ module GroongaSynonym
       end
       formatted << escape_term(@term)
       formatted
+    end
+
+    def ==(other)
+      other.is_a?(self.class) and
+        @term == other.term and
+        @weight == other.weight
+    end
+
+    def eql?(other)
+      self == other
+    end
+
+    def hash
+      [@term, @weight].hash
     end
 
     private

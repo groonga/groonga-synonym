@@ -18,6 +18,31 @@ class SudachiTest < Test::Unit::TestCase
     @source = GroongaSynonym::Sudachi.new
   end
 
+  def synonym(term, weight)
+    GroongaSynonym::Synonym.new(term, weight)
+  end
+
+  def test_duplicated_words
+    _, worker_synonyms = @source.find do |term, synonyms|
+      term == "働き手"
+    end
+    assert_equal([
+                   synonym("人的資源", 0.6),
+                   synonym("人的リソース", 0.6),
+                   synonym("労働力", 0.6),
+                   synonym("ヒューマンリソース", 0.6),
+                   synonym("ヒューマンリソーシズ", 0.6),
+                   synonym("human resources", 0.6),
+                   synonym("マンパワー", 0.6),
+                   synonym("manpower", 0.6),
+                   synonym("人手", 0.6),
+                   synonym("働き手", nil),
+                   synonym("ワーカー", 0.6),
+                   synonym("worker", 0.6),
+                 ],
+                 worker_synonyms)
+  end
+
   def sample_lines(string)
     lines = string.lines
     (lines[0..4] + ["...\n"] + lines[-5..-1]).join
