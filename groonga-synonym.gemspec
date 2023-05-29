@@ -1,6 +1,6 @@
 # -*- ruby -*-
 #
-# Copyright (C) 2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2021-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,5 +47,5 @@ Gem::Specification.new do |spec|
     spec.executables = Dir.glob("*")
   end
 
-  spec.add_runtime_dependency("red-datasets", ">= 0.1.3")
+  spec.add_runtime_dependency("red-datasets", ">= 0.1.6")
 end
