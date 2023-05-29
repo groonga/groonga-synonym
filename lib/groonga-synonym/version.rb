@@ -1,4 +1,4 @@
-# Copyright (C) 2021  Sutou Kouhei <kou@clear-code.com>
+# Copyright (C) 2021-2023  Sutou Kouhei <kou@clear-code.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,5 +14,5 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 module GroongaSynonym
-  VERSION = "1.0.1"
+  VERSION = "1.0.2"
 end
